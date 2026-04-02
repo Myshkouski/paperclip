@@ -1,4 +1,6 @@
-FROM node:lts-trixie-slim AS base
+ARG NODE_VERSION=lts-trixie-slim
+
+FROM node:${NODE_VERSION} AS base
 ARG USER_UID=1000
 ARG USER_GID=1000
 RUN apt-get update \
