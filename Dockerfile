@@ -54,10 +54,25 @@ RUN test -f server/dist/index.js || (echo "ERROR: server build output missing" &
 FROM base AS production
 ARG USER_UID=1000
 ARG USER_GID=1000
+ARG INSTALL_CLAUDE_CODE=true
+ARG INSTALL_CODEX=true
+ARG INSTALL_OPENCODE=true
 WORKDIR /app
 COPY --chown=node:node --from=build /app /app
-RUN npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest opencode-ai \
-  && mkdir -p /paperclip \
+RUN \
+  if [ "$INSTALL_CLAUDE_CODE" = "true" ]; then \
+    npm install --global --omit=dev @anthropic-ai/claude-code@latest; \
+  fi
+RUN \
+  if [ "$INSTALL_CODEX" = "true" ]; then \
+    npm install --global --omit=dev @openai/codex@latest; \
+  fi
+RUN \
+  if [ "$INSTALL_OPENCODE" = "true" ]; then \
+    npm install --global --omit=dev opencode-ai; \
+  fi
+
+RUN mkdir -p /paperclip \
   && chown node:node /paperclip
 
 COPY scripts/docker-entrypoint.sh /usr/local/bin/
