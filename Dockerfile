@@ -60,15 +60,15 @@ ARG INSTALL_OPENCODE=true
 WORKDIR /app
 COPY --chown=node:node --from=build /app /app
 RUN \
-  if [ "$INSTALL_CLAUDE_CODE" = "true" ]; then \
+  if [ "$INSTALL_CLAUDE_CODE" = "1" ]; then \
     npm install --global --omit=dev @anthropic-ai/claude-code@latest; \
   fi
 RUN \
-  if [ "$INSTALL_CODEX" = "true" ]; then \
+  if [ "$INSTALL_CODEX" = "1" ]; then \
     npm install --global --omit=dev @openai/codex@latest; \
   fi
 RUN \
-  if [ "$INSTALL_OPENCODE" = "true" ]; then \
+  if [ "$INSTALL_OPENCODE" = "1" ]; then \
     npm install --global --omit=dev opencode-ai; \
   fi
 
