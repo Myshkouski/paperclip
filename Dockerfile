@@ -55,9 +55,9 @@ RUN test -f server/dist/index.js || (echo "ERROR: server build output missing" &
 FROM base AS production
 ARG USER_UID=1000
 ARG USER_GID=1000
-ARG INSTALL_CLAUDE_CODE=true
-ARG INSTALL_CODEX=true
-ARG INSTALL_OPENCODE=true
+ARG INSTALL_CLAUDE_CODE=1
+ARG INSTALL_CODEX=1
+ARG INSTALL_OPENCODE=1
 WORKDIR /app
 COPY --chown=node:node --from=build /app /app
 RUN \
