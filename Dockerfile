@@ -65,6 +65,7 @@ ARG USER_GID=1000
 ARG INSTALL_CLAUDE_CODE=1
 ARG INSTALL_CODEX=1
 ARG INSTALL_OPENCODE=1
+ARG INSTALL_PI=1
 WORKDIR /app
 COPY --chown=node:node --from=build /app /app
 RUN \
@@ -78,6 +79,10 @@ RUN \
 RUN \
   if [ "$INSTALL_OPENCODE" = "1" ]; then \
     npm install --global --omit=dev opencode-ai; \
+  fi
+RUN \
+  if [ "$INSTALL_PI" = "1" ]; then \
+    npm install --global --omit=dev --ignore-scripts @earendil-works/pi-coding-agent; \
   fi
 
 RUN mkdir -p /paperclip \
