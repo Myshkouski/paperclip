@@ -30,6 +30,8 @@ try {
 }
 
 const relativeSdkDir = relative(scopeDir, sdkDir);
-symlinkSync(relativeSdkDir, linkTarget, "dir");
+try {
+  symlinkSync(relativeSdkDir, linkTarget, "dir");
+} catch (e) {}
 
 console.log(`  ✓ Linked local @paperclipai/plugin-sdk for ${packageDir}`);
