@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, lstatSync, rmSync, symlinkSync } from "node:fs";
+import { existsSync, mkdirSync, lstatSync, rmSync, symlinkSync, unlinkSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -30,8 +30,9 @@ try {
 }
 
 const relativeSdkDir = relative(scopeDir, sdkDir);
-try {
-  symlinkSync(relativeSdkDir, linkTarget, "dir");
-} catch (e) {}
+if (existsSync(linkTarget)) {
+  unlinkSync(linkTarget);
+}
+symlinkSync(relativeSdkDir, linkTarget, "dir");
 
 console.log(`  ✓ Linked local @paperclipai/plugin-sdk for ${packageDir}`);
