@@ -57,7 +57,10 @@ RUN \
 
 FROM base AS build
 WORKDIR /app
-RUN apt-get update \
+RUN \
+  --mount=type=cache,target=/var/lib/apt/lists \
+  --mount=type=cache,target=/var/cache/apt/archives \
+  apt-get update \
   && apt-get install -y --no-install-recommends cargo rustc
 COPY --from=deps /app /app
 COPY . .
@@ -97,12 +100,15 @@ WORKDIR /app
 # (the single most expensive layer: four CLI toolchains + apt, per arch) can
 # never hit the layer cache and rebuilds on every build.
 RUN echo "cli-tools-epoch: ${CLI_TOOLS_CACHE_EPOCH}" \
-  && npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest opencode-ai @google/gemini-cli@latest @moonshot-ai/kimi-code@latest \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends openssh-client jq \
-  && rm -rf /var/lib/apt/lists/* \
-  && mkdir -p /paperclip \
-  && chown node:node /paperclip
+  && npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest opencode-ai @google/gemini-cli@latest @moonshot-ai/kimi-code@latest
+
+RUN \
+  --mount=type=cache,target=/var/lib/apt/lists \
+  --mount=type=cache,target=/var/cache/apt/archives \
+  apt-get update \
+  && apt-get install -y --no-install-recommends openssh-client jq
+
+RUN mkdir -p /paperclip && chown node:node /paperclip
 
 COPY scripts/docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
