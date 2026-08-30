@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1.20
-FROM node:24-trixie-slim AS base
+ARG NODE_VERSION="24-trixie-slim"
+FROM node:${NODE_VERSION} AS base
 ARG USER_UID=1000
 ARG USER_GID=1000
 RUN \
