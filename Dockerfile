@@ -102,9 +102,10 @@ WORKDIR /app
 # the app copy changes on every commit — ordered the other way around, this
 # (the single most expensive layer: four CLI toolchains + apt, per arch) can
 # never hit the layer cache and rebuilds on every build.
-RUN echo "cli-tools-epoch: ${CLI_TOOLS_CACHE_EPOCH}" \
+RUN \
+  --mount=type=cache,target=/root/.npm \
+  echo "cli-tools-epoch: ${CLI_TOOLS_CACHE_EPOCH}" \
   && npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest opencode-ai @google/gemini-cli@latest @moonshot-ai/kimi-code@latest
-
 RUN \
   --mount=type=cache,target=/var/lib/apt/lists \
   --mount=type=cache,target=/var/cache/apt/archives \
