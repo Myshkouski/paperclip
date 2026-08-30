@@ -2,9 +2,11 @@
 FROM node:24-trixie-slim AS base
 ARG USER_UID=1000
 ARG USER_GID=1000
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates gosu curl gh git wget ripgrep python3 tini \
-  && rm -rf /var/lib/apt/lists/*
+RUN \
+  --mount=type=cache,target=/var/lib/apt/lists \
+  --mount=type=cache,target=/var/cache/apt/archives \
+  apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates gosu curl gh git wget ripgrep python3 tini
 
 RUN corepack enable pnpm
 
@@ -54,8 +56,7 @@ RUN pnpm install --frozen-lockfile
 FROM base AS build
 WORKDIR /app
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends cargo rustc \
-  && rm -rf /var/lib/apt/lists/*
+  && apt-get install -y --no-install-recommends cargo rustc
 COPY --from=deps /app /app
 COPY . .
 RUN pnpm --filter @paperclipai/ui build
