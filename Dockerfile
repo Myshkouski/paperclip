@@ -51,7 +51,9 @@ COPY packages/plugins/plugin-workspace-diff/package.json packages/plugins/plugin
 COPY patches/ patches/
 COPY scripts/link-plugin-dev-sdk.mjs scripts/
 
-RUN pnpm install --frozen-lockfile
+RUN \
+  --mount=type=cache,target=/root/.pnpm-store \
+  pnpm install --frozen-lockfile
 
 FROM base AS build
 WORKDIR /app
